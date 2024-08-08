@@ -32,7 +32,7 @@ docker compose build
 docker compose up
 ```
 
-- To begin a load test run the following command:
+- To begin a load test run, execute the following command:
 
 ```sh
 docker exec -it tester sh -c "build/tm-load-test -c 1 -T 90 -r 100 -s 250 --broadcast-tx-method async --endpoints ws://node0:26657/websocket,ws://node3:26657/websocket"

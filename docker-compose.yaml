@@ -1,0 +1,107 @@
+services:
+  node0:
+    container_name: node0
+    image: "tendermint/tendermint"
+    ports:
+      - "26656-26657:26656-26657"
+      - "26670:26660"
+    volumes:
+      - ./nodes/node0:/tendermint
+    # volumes:
+    #   - ./nodes/node0/config/config.toml:/tendermint/config/config.toml
+    #   - ./nodes/node0/config/genesis.json:/tendermint/config/genesis.json
+    #   - ./nodes/node0/config/node_key.json:/tendermint/config/node_key.json
+    #   - ./nodes/node0/config/priv_validator_key.json:/tendermint/config/priv_validator_key.json
+    command: node --proxy_app=kvstore
+    networks:
+      localnet:
+        ipv4_address: 192.167.0.2
+
+  node1:
+    container_name: node1
+    image: "tendermint/tendermint"
+    ports:
+      - "26659-26660:26656-26657"
+      - "26671:26660"
+    volumes:
+      - ./nodes/node1:/tendermint
+    # volumes:
+    #   - ./nodes/node1/config/config.toml:/tendermint/config/config.toml
+    #   - ./nodes/node1/config/genesis.json:/tendermint/config/genesis.json
+    #   - ./nodes/node1/config/node_key.json:/tendermint/config/node_key.json
+    #   - ./nodes/node1/config/priv_validator_key.json:/tendermint/config/priv_validator_key.json
+    command: node --proxy_app=kvstore
+    networks:
+      localnet:
+        ipv4_address: 192.167.0.3
+
+  node2:
+    container_name: node2
+    image: "tendermint/tendermint"
+    ports:
+      - "26661-26662:26656-26657"
+      - "26672:26660"
+    volumes:
+      - ./nodes/node2:/tendermint
+    # volumes:
+    #   - ./nodes/node2/config/config.toml:/tendermint/config/config.toml
+    #   - ./nodes/node2/config/genesis.json:/tendermint/config/genesis.json
+    #   - ./nodes/node2/config/node_key.json:/tendermint/config/node_key.json
+    #   - ./nodes/node2/config/priv_validator_key.json:/tendermint/config/priv_validator_key.json
+    command: node --proxy_app=kvstore
+    networks:
+      localnet:
+        ipv4_address: 192.167.0.4
+
+  node3:
+    container_name: node3
+    image: "tendermint/tendermint"
+    ports:
+      - "26663-26664:26656-26657"
+      - "26673:26660"
+    volumes:
+      - ./nodes/node3:/tendermint
+    # volumes:
+    #   - ./nodes/node3/config/config.toml:/tendermint/config/config.toml
+    #   - ./nodes/node3/config/genesis.json:/tendermint/config/genesis.json
+    #   - ./nodes/node3/config/node_key.json:/tendermint/config/node_key.json
+    #   - ./nodes/node3/config/priv_validator_key.json:/tendermint/config/priv_validator_key.json
+    command: node --proxy_app=kvstore
+    networks:
+      localnet:
+        ipv4_address: 192.167.0.5
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
+    ports:
+      - "9090:9090"
+    networks:
+      localnet:
+        ipv4_address: 192.167.0.6
+
+  tester:
+    container_name: tester
+    build: ./tester
+    # command: bash -c "sleep 5 && build/tm-load-test -c 1 -T 90 -r 100 -s 250 --broadcast-tx-method async --endpoints ws://node0:26657/websocket,ws://node3:26657/websocket"
+    command: sleep infinity
+    depends_on:
+      - node0
+      - node1
+      - node2
+      - node3
+      - prometheus
+    networks:
+      localnet:
+        ipv4_address: 192.167.0.7
+
+networks:
+  localnet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      -
+        subnet: 192.167.0.0/16

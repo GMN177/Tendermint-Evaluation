@@ -38,6 +38,8 @@ docker compose up
 docker exec -it tester sh -c "build/tm-load-test -c 1 -T 90 -r 100 -s 250 --broadcast-tx-method async --endpoints ws://node0:26657/websocket,ws://node3:26657/websocket"
 ```
 
+- To review the metrics of the network, navigate to <localhost:9090>
+
 - To reset the state of the chain, stop all running containers and run the following command:
 
 ```sh
